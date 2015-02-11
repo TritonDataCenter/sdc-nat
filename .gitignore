@@ -1,0 +1,8 @@
+/node_modules
+/tmp
+/build
+/etc
+.*.swp
+/docs/*.html
+/docs/*.json
+.DS_Store

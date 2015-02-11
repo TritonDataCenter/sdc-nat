@@ -1,0 +1,12 @@
+{
+  "name": "nat",
+  "description": "SmartDataCenter per-user NAT zone",
+  "version": "0.1.0",
+  "author": "Joyent (joyent.com)",
+  "private": true,
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+  "license": "MPL-2.0"
+}
