@@ -8,7 +8,7 @@
 # Copyright (c) 2015, Joyent, Inc.
 #
 
-NAME:=hostvolume
+NAME:=nat
 
 include ./tools/mk/Makefile.defs
 include ./tools/mk/Makefile.smf.defs
