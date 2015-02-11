@@ -11,7 +11,6 @@
 NAME:=nat
 
 include ./tools/mk/Makefile.defs
-include ./tools/mk/Makefile.smf.defs
 
 RELEASE_TARBALL:=$(NAME)-pkg-$(STAMP).tar.bz2
 RELSTAGEDIR:=/tmp/$(STAMP)
@@ -65,5 +64,4 @@ publish: release
 
 
 include ./tools/mk/Makefile.deps
-include ./tools/mk/Makefile.smf.targ
 include ./tools/mk/Makefile.targ
