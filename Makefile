@@ -48,6 +48,7 @@ release: all
 	# other bits
 	cp -r \
 		$(TOP)/package.json \
+		$(TOP)/bin \
 		$(RELSTAGEDIR)/root/opt/smartdc/$(NAME)
 	# Tar
 	(cd $(RELSTAGEDIR) && $(TAR) -jcf $(TOP)/$(RELEASE_TARBALL) root)

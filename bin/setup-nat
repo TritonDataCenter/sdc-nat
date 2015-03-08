@@ -1,0 +1,74 @@
+#!/bin/bash
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+
+#
+# Copyright (c) 2015, Joyent, Inc.
+#
+
+#
+# Nat zone setup script
+#
+
+set -o xtrace
+set -o pipefail
+
+function fatal
+{
+    local msg="$*"
+    [[ -z "$msg" ]] && msg="failed"
+    echo "$msg" >&2
+    exit 1
+}
+
+
+function enable_ipv4_forwarding
+{
+    /usr/sbin/ipadm set-prop -p forwarding=on ipv4
+}
+
+
+function enable_ipnat
+{
+    /usr/sbin/ipf -E || fatal "failed to enable ipf"
+    /usr/sbin/ipnat -CF || fatal "failed to flush ipnat rules"
+    /usr/sbin/ipnat -f /etc/ipf/ipnat.conf || fatal "failed to flush ipnat rules"
+}
+
+#
+# We need to write out a functional config for ipnat. It basically looks like
+# the following:
+#
+# map <external device> <internal subnet> -> 0/32
+#
+# The internal subnet is passed in via metadata. We determine the external
+# device based on which devices don't end up matching.
+#
+function write_config
+{
+    local primary nic first subnet
+
+    subnet=$(mdata-get com.joyent:ipnat_subnet)
+    [[ $? -eq 0 ]] || fatal "failed to get mdata-get prefix"
+    [[ -z "$subnet" ]] && fatal "com.joyent:ipnat_subnet is empty"
+    primary=$(mdata-get sdc:nics | json -gac 'this.primary === true' interface)
+    [[ $? -eq 0 ]] || fatal "failed to run mdata-get and/or json"
+    [[ -z "$primary" ]] && fatal "unexpected error: no primary nics"
+
+    first=
+    for nic in $primary; do
+            [[ -n "$first" ]] && fatal "encountered multiple primary nics"
+            first="fatal"
+    done
+
+    mkdir -p /etc/ipf || fatal "failed to mkdir /etc/ipf"
+    echo "map $primary $subnet -> 0/32" > /etc/ipf/ipnat.conf || \
+        fatal "failed to write out ipnat.conf"
+}
+
+enable_ipv4_forwarding || fatal "failed to enable routing"
+write_config || fatal "failed to write ipnat config"
+enable_ipnat || fatal "failed to enable ipneat"

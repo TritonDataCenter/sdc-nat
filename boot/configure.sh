@@ -17,4 +17,6 @@ set -o pipefail
 
 PATH=/opt/local/bin:/opt/local/sbin:/usr/bin:/usr/sbin
 
+/opt/smartdc/nat/bin/setup-nat
+
 exit 0
