@@ -73,10 +73,8 @@ function write_config
     # address and the port, and one for everything else (e.g. ICMP) that will
     # only translate the IP address.
     #
-    cat << EOF > $NATCONF || fatal "failed to write $NATCONF"
-    map $primary $subnet -> 0/32 portmap tcp/udp 1025:65535
-    map $primary $subnet -> 0/32
-    EOF
+    echo "map $primary $subnet -> 0/32 portmap tcp/udp 1025:65535
+map $primary $subnet -> 0/32" > $NATCONF || fatal "failed to write $NATCONF"
 }
 
 enable_ipv4_forwarding || fatal "failed to enable routing"
