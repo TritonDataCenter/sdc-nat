@@ -69,13 +69,14 @@ function write_config
     mkdir -p /etc/ipf || fatal "failed to mkdir /etc/ipf"
 
     #
-    # We need 2 rules here.  One for TCP & UDP packets that will translate both
-    # the IP addresses and the port, and one for everything else (e.g. ICMP)
-    # that will only translate the IP address.
+    # We need 2 rules here.  One for TCP & UDP that will translate both the IP
+    # address and the port, and one for everything else (e.g. ICMP) that will
+    # only translate the IP address.
     #
-    echo "map $primary $subnet -> 0/32 portmap tcp/udp 1025:65535
-        map $primary $subnet -> 0/32" > $NATCONF || \
-        fatal "failed to write $NATCONF"
+    cat << EOF > $NATCONF || fatal "failed to write $NATCONF"
+    map $primary $subnet -> 0/32 portmap tcp/udp 1025:65535
+    map $primary $subnet -> 0/32
+    EOF
 }
 
 enable_ipv4_forwarding || fatal "failed to enable routing"
