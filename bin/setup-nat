@@ -75,7 +75,7 @@ function write_config
     #
     cat << EOF > $NATCONF || fatal "failed to write $NATCONF"
 map $primary $subnet -> 0/32 portmap tcp/udp 1025:65535
-map $primary $subnet -> 0/32 icmpidmap icmp 1025:65535
+#map $primary $subnet -> 0/32 icmpidmap icmp 1025:65535
 map $primary $subnet -> 0/32
 EOF
 }
