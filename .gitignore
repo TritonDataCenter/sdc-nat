@@ -1,6 +1,8 @@
+/make_stamps
 /nat-pkg-*
 /node_modules
 /tmp
+/bits
 /build
 /etc
 .*.swp

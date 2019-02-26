@@ -5,16 +5,23 @@
 #
 
 #
-# Copyright (c) 2015, Joyent, Inc.
+# Copyright (c) 2019, Joyent, Inc.
 #
 
 NAME:=nat
+NPM = npm
 
-include ./tools/mk/Makefile.defs
+ENGBLD_USE_BUILDIMAGE	= true
+ENGBLD_REQUIRE		:= $(shell git submodule update --init deps/eng)
+include ./deps/eng/tools/mk/Makefile.defs
+TOP ?= $(error Unable to access eng.git submodule Makefiles.)
 
-RELEASE_TARBALL:=$(NAME)-pkg-$(STAMP).tar.bz2
-RELSTAGEDIR:=/tmp/$(STAMP)
+RELEASE_TARBALL:=$(NAME)-pkg-$(STAMP).tar.gz
+RELSTAGEDIR:=/tmp/$(NAME)-$(STAMP)
 
+BASE_IMAGE_UUID = de411e86-548d-11e4-a4b7-3bb60478632a
+BUILDIMAGE_NAME = $(NAME)
+BUILDIMAGE_DESC	= SmartDataCenter per-user NAT zone
 
 #
 # Targets
@@ -51,18 +58,14 @@ release: all
 		$(TOP)/bin \
 		$(RELSTAGEDIR)/root/opt/smartdc/$(NAME)
 	# Tar
-	(cd $(RELSTAGEDIR) && $(TAR) -jcf $(TOP)/$(RELEASE_TARBALL) root)
+	(cd $(RELSTAGEDIR) && $(TAR) -I pigz -cf $(TOP)/$(RELEASE_TARBALL) root)
 	@rm -rf $(RELSTAGEDIR)
 
 .PHONY: publish
 publish: release
-	@if [[ -z "$(BITS_DIR)" ]]; then \
-		@echo "error: 'BITS_DIR' must be set for 'publish' target"; \
-		exit 1; \
-	fi
-	mkdir -p $(BITS_DIR)/$(NAME)
-	cp $(TOP)/$(RELEASE_TARBALL) $(BITS_DIR)/$(NAME)/$(RELEASE_TARBALL)
+	mkdir -p $(ENGBLD_BITS_DIR)/$(NAME)
+	cp $(TOP)/$(RELEASE_TARBALL) $(ENGBLD_BITS_DIR)/$(NAME)/$(RELEASE_TARBALL)
 
 
-include ./tools/mk/Makefile.deps
-include ./tools/mk/Makefile.targ
+include ./deps/eng/tools/mk/Makefile.deps
+include ./deps/eng/tools/mk/Makefile.targ
