@@ -19,7 +19,7 @@ TOP ?= $(error Unable to access eng.git submodule Makefiles.)
 RELEASE_TARBALL:=$(NAME)-pkg-$(STAMP).tar.gz
 RELSTAGEDIR:=/tmp/$(NAME)-$(STAMP)
 
-BASE_IMAGE_UUID = de411e86-548d-11e4-a4b7-3bb60478632a
+BASE_IMAGE_UUID = a9368831-958e-432d-a031-f8ce6768d190
 BUILDIMAGE_NAME = $(NAME)
 BUILDIMAGE_DESC	= SmartDataCenter per-user NAT zone
 
